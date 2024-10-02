@@ -30,10 +30,6 @@ mamba install --update-specs --quiet --yes --channel conda-forge --strict-channe
 mamba update --update-specs --yes --quiet --channel conda-forge --strict-channel-priority \
     pip mamba rattler-build conda-forge-ci-setup=4 "conda-build>=24.1"
 
-mamba remove --force --yes rattler-build-conda-compat
-conda run pip uninstall -y rattler-build-conda-compat
-conda run pip install https://github.com/hadim/rattler-build-conda-compat/archive/refs/heads/hadim-patch-1.zip
-
 
 echo -e "\n\nSetting up the condarc and mangling the compiler."
 setup_conda_rc ./ ./recipe ./.ci_support/${CONFIG}.yaml
