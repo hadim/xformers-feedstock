@@ -2,6 +2,8 @@ context:
   name: xformers
   version: "0.0.28.post1"
   build_number: 0
+  cuda_version: ${{ env.get("CUDA_COMPILER_VERSION", default="None")}}
+  cuda: ${{ "true" if cuda_version != "None" else "false" }}
   cuda_build_string: cuda_${{ cuda_version | version_to_buildstring }}
   string_prefix: ${{ cuda_build_string if cuda else "cpu_" }}
 
@@ -20,16 +22,16 @@ source:
     file_name: third_party/flash-attention/LICENSE
 
 build:
-  number: ${{ build_number}}
+  number: ${{ build_number }}
   skip:
     - win
   string: ${{ string_prefix }}py${{ python | version_to_buildstring }}h${{ hash }}_${{ build_number }}
   variant:
     use_keys:
       # use cuda from the variant config, e.g. to build multiple CUDA variants
-      - cuda
+      - ${{ "cuda" if cuda == "true" }}
     # this will down-prioritize the cuda variant versus other variants of the package
-    down_prioritize_variant: ${{ 1 if cuda else 0 }}
+    down_prioritize_variant: ${{ 1 if cuda == "true" else 0 }}
   script:
     file: build
     env:
@@ -46,12 +48,12 @@ requirements:
     - ${{ compiler('cxx') }}
     - ${{ stdlib('c') }}
 
-    - if: cuda
+    - if: cuda == "true"
       then:
         - ${{ compiler('cuda') }}
         - cuda-version ==${{ cuda_version }}
 
-    - if: cuda and match(cuda_version, ">=12") and build_platform != target_platform
+    - if: match(cuda_version, ">=12") and build_platform != target_platform
       then:
         - cuda-driver-dev
         - cuda-cudart-dev
@@ -68,13 +70,15 @@ requirements:
     - python
     - pip
     - setuptools
-    - ${{ "pytorch =*=cuda*" if cuda == "yes" }}
-    - ${{ "pytorch =*=cpu*" if cuda == "no" }}
+    # - ${{ "pytorch =*=cuda*" if cuda }}
+    # - ${{ "pytorch =*=cpu*" if not cuda }}
     - pytorch >=2.4
 
-    - ${{ "cuda-version =={{ cuda_version }}" if cuda }}
+    - if: cuda == "true"
+      then:
+        - cuda-version ==${{ cuda_version }}
 
-    - if: cuda and match(cuda_version, ">=12")
+    - if: match(cuda_version, ">=12")
       then:
         - cuda-driver-dev
         - cuda-cudart-dev
@@ -90,12 +94,12 @@ requirements:
     - python
     - numpy
     - pyre-extensions >=0.0.29
-    - ${{ "pytorch =*=cuda*" if cuda == "yes" }}
-    - ${{ "pytorch =*=cpu*" if cuda == "no" }}
+    # - ${{ "pytorch =*=cuda*" if cuda }}
+    # - ${{ "pytorch =*=cpu*" if not cuda }}
 
   ignore_run_exports:
     from_package:
-      - if: cuda and match(cuda_version, ">=12")
+      - if: match(cuda_version, ">=12")
         then:
           - cuda-nvrtc-dev
           - cuda-nvtx-dev
