@@ -5,7 +5,7 @@ context:
   cuda_version: ${{ env.get("CUDA_COMPILER_VERSION", default="None")}}
   cuda: ${{ "true" if cuda_version != "None" else "false" }}
   cuda_build_string: cuda_${{ cuda_version | version_to_buildstring }}
-  string_prefix: ${{ cuda_build_string if cuda else "cpu_" }}
+  string_prefix: ${{ cuda_build_string if cuda ==  "true" else "cpu_" }}
 
 package:
   name: ${{ name|lower }}
@@ -45,6 +45,19 @@ requirements:
         - cross-python_${{ target_platform }}
         - pytorch >=2.4
 
+        - if: match(cuda_version, ">=12")
+          then:
+            - cuda-driver-dev
+            - cuda-cudart-dev
+            - cuda-nvrtc-dev
+            - cuda-nvtx-dev
+            - cuda-nvml-dev
+            - libcublas-dev
+            - libcufft-dev
+            - libcurand-dev
+            - libcusolver-dev
+            - libcusparse-dev
+
     - ${{ compiler('cxx') }}
     - ${{ stdlib('c') }}
 
@@ -53,25 +66,12 @@ requirements:
         - ${{ compiler('cuda') }}
         - cuda-version ==${{ cuda_version }}
 
-    - if: match(cuda_version, ">=12") and build_platform != target_platform
-      then:
-        - cuda-driver-dev
-        - cuda-cudart-dev
-        - cuda-nvrtc-dev
-        - cuda-nvtx-dev
-        - cuda-nvml-dev
-        - libcublas-dev
-        - libcufft-dev
-        - libcurand-dev
-        - libcusolver-dev
-        - libcusparse-dev
-
   host:
     - python
     - pip
     - setuptools
-    - ${{ "pytorch =*=cuda*" if cuda == "true" }}
-    - ${{ "pytorch =*=cpu*" if cuda == "false" }}
+    - ${{ "pytorch [version='*', build='cuda*']" if cuda == "true" }}
+    - ${{ "pytorch [version='*', build='cpu*']" if cuda == "false" }}
     - pytorch >=2.4
 
     - if: cuda == "true"
@@ -94,8 +94,8 @@ requirements:
     - python
     - numpy
     - pyre-extensions >=0.0.29
-    - ${{ "pytorch =*=cuda*" if cuda == "true" }}
-    - ${{ "pytorch =*=cpu*" if cuda == "false" }}
+    - ${{ "pytorch [version='*', build='cuda*']" if cuda == "true" }}
+    - ${{ "pytorch [version='*', build='cpu*']" if cuda == "false" }}
 
   ignore_run_exports:
     from_package:
