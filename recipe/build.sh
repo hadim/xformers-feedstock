@@ -18,8 +18,4 @@ fi
 # avoid "error: 'value' is unavailable: introduced in macOS 10.13"
 export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
 
-echo $cuda_compiler_version
-exit 1
-
-
 $PYTHON -m pip install . -vv --no-deps --no-build-isolation
