@@ -70,8 +70,8 @@ requirements:
     - python
     - pip
     - setuptools
-    # - ${{ "pytorch =*=cuda*" if cuda }}
-    # - ${{ "pytorch =*=cpu*" if not cuda }}
+    - ${{ "pytorch =*=cuda*" if cuda == "true" }}
+    - ${{ "pytorch =*=cpu*" if cuda == "false" }}
     - pytorch >=2.4
 
     - if: cuda == "true"
@@ -94,8 +94,8 @@ requirements:
     - python
     - numpy
     - pyre-extensions >=0.0.29
-    # - ${{ "pytorch =*=cuda*" if cuda }}
-    # - ${{ "pytorch =*=cpu*" if not cuda }}
+    - ${{ "pytorch =*=cuda*" if cuda == "true" }}
+    - ${{ "pytorch =*=cpu*" if cuda == "false" }}
 
   ignore_run_exports:
     from_package:
