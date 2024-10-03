@@ -33,6 +33,3 @@ pytorch:
 target_platform:
 - osx-arm64
 
-CONDA_BUILD_SYSROOT:
-- /var/folders/fk/ty303kmn61x3y013qnk89g3h0000gn/T/tmp.wa1zJDax5f/MacOSX11.0.sdk
-
