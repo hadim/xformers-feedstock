@@ -36,6 +36,7 @@ build:
     file: build
     env:
       cuda_compiler_version: ${{ cuda_version | default('None') }}
+      package_version: ${{ version }}
 
 requirements:
   build:
@@ -60,6 +61,7 @@ requirements:
 
     - ${{ compiler('cxx') }}
     - ${{ stdlib('c') }}
+    - git
 
     - if: cuda == "true"
       then:
@@ -114,6 +116,8 @@ tests:
       imports:
         - xformers
       pip_check: true
+  - script:
+      - python -m xformers.info
 
 about:
   license: BSD-3-Clause AND Apache-2.0
