@@ -30,6 +30,8 @@ mamba install --update-specs --quiet --yes --channel conda-forge --strict-channe
 mamba update --update-specs --yes --quiet --channel conda-forge --strict-channel-priority \
     pip mamba rattler-build conda-forge-ci-setup=4 "conda-build>=24.1"
 
+conda run pip uninstall -y conda-forge-ci-setup
+conda run pip install https://github.com/hadim/conda-forge-ci-setup-feedstock/archive/refs/heads/disable_cache.zip
 
 
 echo -e "\n\nSetting up the condarc and mangling the compiler."
