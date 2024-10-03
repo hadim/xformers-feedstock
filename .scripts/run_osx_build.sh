@@ -31,7 +31,7 @@ mamba update --update-specs --yes --quiet --channel conda-forge --strict-channel
     pip mamba rattler-build conda-forge-ci-setup=4 "conda-build>=24.1"
 
 conda run pip uninstall -y conda-forge-ci-setup
-conda run pip install https://github.com/hadim/conda-forge-ci-setup-feedstock/archive/refs/heads/fix_validation.zip
+conda run pip install https://github.com/hadim/conda-forge-ci-setup-feedstock/archive/refs/heads/fix_validation.zip#subdirectory=recipe
 
 conda run pip uninstall -y rattler-build-conda-compat
 conda run pip install https://github.com/hadim/rattler-build-conda-compat/archive/refs/heads/fix_validation.zip
